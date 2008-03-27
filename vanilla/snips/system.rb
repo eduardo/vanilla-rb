@@ -43,6 +43,7 @@ system.edit_template = <<-HTML
   <form action="<%= Vanilla::Routes.url_to "save" %>">
   <dl class="attributes">
     <% snip.attributes.each do |name, value| %>
+    <% value = "" if value.nil? %>
     <dt><%= name %></dt>
     <% num_rows = value.split("\n").length + 1 %>
     <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%=h value %></textarea></dd>
