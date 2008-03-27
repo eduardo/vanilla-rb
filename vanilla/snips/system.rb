@@ -23,6 +23,41 @@ system.main_template = <<-HTML
 </html>
 HTML
 
+system.edit_template = <<-HTML
+<% snip = Snip[context[:snip]] %>
+<html>
+<head>
+  <title>Editing '<%= snip.name %>'</title>
+  <script language="javascript" src="/public/javascripts/jquery-1.2.3.js" />
+  <script language="javascript" src="/public/javascripts/vanilla.js" />
+  <link rel="stylesheet" type="text/css" media="screen"  href="<%= Vanilla::Routes.url_to_raw("system", "css") %>" />
+</head>
+<body>
+  <div id="content">
+    <div id="controls">
+      <strong><a href="/">home</a></strong>, 
+      <%= Vanilla::Routes.new_link %> ::
+      <strong><%= Vanilla::Routes.link_to snip.name %></strong> &rarr; 
+      Editing
+    </div>
+  <form action="<%= Vanilla::Routes.url_to "save" %>">
+  <dl class="attributes">
+    <% snip.attributes.each do |name, value| %>
+    <dt><%= name %></dt>
+    <% num_rows = value.split("\n").length + 1 %>
+    <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%=h value %></textarea></dd>
+    <% end %>
+    <dt><input class="attribute_name" type="text"></input></dt>
+    <dd><textarea></textarea></dd>
+  </dl>
+  <a href="#" id="add">Add</a>
+  <button name='save_button'>Save</button>
+  </form>
+  </div>
+</body>
+</html>
+HTML
+
 system.four_oh_four = <<-HTML
 <h1>DANG IT!</h1>
 <p>That is too bad. DANG that smarts bad. I couldn't load your request. Was it malformed?</p>

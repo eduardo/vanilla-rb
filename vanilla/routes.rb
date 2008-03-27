@@ -17,7 +17,7 @@ module Vanilla
     end
   
     def edit_link(snip_name, link_text)
-      %[<a href="/edit?snip_to_edit=#{snip_name}">#{link_text}</a>]
+      %[<a href="/#{snip_name}.edit">#{link_text}</a>]
     end
   
     def new_link(snip_name="New")
