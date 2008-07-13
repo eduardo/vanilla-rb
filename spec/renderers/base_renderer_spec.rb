@@ -50,7 +50,7 @@ describe Vanilla::Renderers::Base do
       @renderer = Vanilla::Renderers::Base.new(app)
       @snip = create_snip(:name => 'blah', :content => 'include a {missing_snip}')
     end
-
+    
     it "should return a string describing the missing snip" do
       @renderer.render(@snip).should == "include a [snip 'missing_snip' cannot be found]"
     end
