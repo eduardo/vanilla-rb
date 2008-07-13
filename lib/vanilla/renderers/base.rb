@@ -19,19 +19,36 @@ module Vanilla
         @app = app
       end
       
-      def self.snip_regexp
-        %r{ \{
-          ([\w\-]+) (?: \.([\w\-]+) )?
-          (?: \s+ ([\w\-,]+) )?
+      def self.snip_call_regexp
+        %r{ \{ 
+          ((?:.+(?:\\\}))?.+?) (?# match anything including escaped curly brace, between the braces)
         \} }x
+      end
+      
+      def self.snip_call_part_regexp
+        %r{
+          \"(.+?)\" | (?# match anything in quotes)
+            ([^,\s]+) (?# match anything split by commas or spaces)
+        }x
       end
     
       # Default behaviour to include a snip's content
       def include_snips(content)
-        content.gsub(Vanilla::Renderers::Base.snip_regexp) do
-          snip_name = $1
-          snip_attribute = $2
-          snip_args = $3 ? $3.split(',') : []
+        content.gsub(Vanilla::Renderers::Base.snip_call_regexp) do
+          parts = []
+          $1.scan(Vanilla::Renderers::Base.snip_call_part_regexp) do |matches| 
+            parts << matches.compact.first.gsub('\\}', "}")
+          end
+          snip_name, snip_attribute = parts.shift.split(".")
+          snip_args = parts
+          
+          # hacky removal of quotes
+          if snip_name =~ /^".*"$/
+            snip_name = snip_name.gsub(/^"/, '').gsub(/"$/, '')
+          end
+          if snip_attribute =~ /^".*"$/
+            snip_attribute = snip_attribute.gsub(/^"/, '').gsub(/"$/, '')
+          end
           
           # Render the snip or snip part with the given args, and the current
           # context, but with the default renderer for that snip. We dispatch
