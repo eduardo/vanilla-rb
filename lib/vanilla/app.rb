@@ -8,7 +8,7 @@ module Vanilla
     
     def initialize(config_file=nil)
       prepare_configuration(config_file)
-      Soup.base = YAML.load(File.read('config/database.yml'))
+      Soup.base = YAML.load(File.read('config/database.yml'))['production']
       Soup.prepare
     end
     
